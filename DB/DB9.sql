@@ -115,11 +115,11 @@ CREATE FUNCTION hello()
   BEGIN
 	  DECLARE hour INT;
 	  SET hour = HOUR(NOW());
-	  IF (hour >= '6') AND (hour < '12') THEN
+	  IF (hour >= 6) AND (hour < 12) THEN
 		RETURN 'Доброе утро';
-	  ELSEIF (hour >= '12') AND (hour < '18') THEN
+	  ELSEIF (hour >= 12) AND (hour < 18) THEN
 		RETURN 'Добрый день';
-	  ELSEIF (hour >= '18') AND (hour < '24') THEN
+	  ELSEIF (hour >= 18) AND (hour < 24) THEN
 		RETURN 'Добрый вечер';
 	  ELSE 
 	    RETURN 'Доброй ночи';
