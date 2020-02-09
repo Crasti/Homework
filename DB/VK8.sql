@@ -8,7 +8,6 @@ COUNT(m.to_user_id) AS total_messages
   FROM messages m
     JOIN users u
     ON m.from_user_id = u.id
---    WHERE u.id = 23
     JOIN friendship f
     ON u.id = f.friend_id
     OR u.id = f.user_id
@@ -21,12 +20,12 @@ ORDER BY total_messages DESC LIMIT 1;
 
 DESC likes;
 SELECT SUM(total_likes) AS likes_total FROM (
-SELECT COUNT(*) AS total_likes
+SELECT COUNT(DISTINCT l.id) AS total_likes
   FROM profiles p
-  RIGHT JOIN likes l
+  LEFT JOIN likes l
   ON p.user_id = l.target_id
-  WHERE l.target_type_id = 2
-  GROUP BY l.target_id
+  AND l.target_type_id = 2
+  GROUP BY p.user_id
   ORDER BY p.birthdate DESC LIMIT 10 
 ) AS anithing;
 
@@ -50,16 +49,29 @@ SELECT CASE(p.sex)
 -- Найти 10 пользователей, которые проявляют наименьшую активность в использовании 
 -- социальной сети.
 
-SELECT u.first_name, u.last_name, COUNT(l.user_id) AS total_likes
+ SELECT u.first_name, u.last_name,
+  COUNT(DISTINCT m.id) + 
+  COUNT(DISTINCT l.id) + 
+  COUNT(DISTINCT med.id) AS activity 
+  FROM users u
+    LEFT JOIN messages m
+      ON u.id = m.from_user_id
+    LEFT JOIN likes l
+      ON u.id = l.user_id
+    LEFT JOIN media med
+      ON u.id = med.user_id
+  GROUP BY u.id
+  ORDER BY activity
+  LIMIT 10;
+ 
+/* SELECT u.first_name, u.last_name, COUNT(l.user_id) AS total_likes
   FROM users u
   LEFT JOIN likes l
   ON u.id = l.user_id
   GROUP BY l.user_id
   ORDER BY total_likes
  LIMIT 10;
-
-
-
+/*
 
 
 
